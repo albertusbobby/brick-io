@@ -27,7 +27,6 @@ public class BrickTestApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//		BrickService.runApp();
         brickService.run();
     }
 }
