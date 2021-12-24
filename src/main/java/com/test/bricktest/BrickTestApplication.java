@@ -15,19 +15,19 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 })
 public class BrickTestApplication implements CommandLineRunner {
 
+    public static void main(String[] args) {
+        SpringApplication.run(BrickTestApplication.class, args);
+    }
+
     private BrickService brickService;
 
     BrickTestApplication(BrickService brickService){
         this.brickService = brickService;
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(BrickTestApplication.class, args);
-    }
-
     @Override
     public void run(String... args) throws Exception {
 //		BrickService.runApp();
-        brickService.runApp();
+        brickService.run();
     }
 }
