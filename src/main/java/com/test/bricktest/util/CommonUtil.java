@@ -1,10 +1,8 @@
 package com.test.bricktest.util;
 
-import com.opencsv.CSVWriter;
 import com.test.bricktest.model.Product;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -16,7 +14,7 @@ public class CommonUtil {
     private static final String DELIMETER = ";";
     private static final String NAME_OF_FILE = "products.csv";
 
-    public static void export(List<Product> products, String csvPath){
+    public static void export(List<Product> products){
         if (products.size() == 0){
             return;
         }
@@ -24,6 +22,7 @@ public class CommonUtil {
         StringBuilder result = new StringBuilder();
         products.forEach(p -> {
             result.append(p.getName()).append(DELIMETER)
+                    .append(p.getDescription()).append(DELIMETER)
                     .append(p.getImageLink()).append(DELIMETER)
                     .append(p.getPrice()).append(DELIMETER)
                     .append(p.getRating()).append(DELIMETER)
