@@ -122,8 +122,8 @@ public class BrickService {
             driver.close();
             driver.switchTo().window(currentWindowHandle);
         } catch (Exception e) {
-            String s = driver.getWindowHandle();
-            if (!s.equals(currentWindowHandle)) {
+            var currWin = driver.getWindowHandle();
+            if (!currWin.equals(currentWindowHandle)) {
                 driver.close();
                 driver.switchTo().window(currentWindowHandle);
                 log.info("navigate to first window");
