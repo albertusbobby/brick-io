@@ -3,6 +3,7 @@ package com.test.bricktest.service;
 import com.test.bricktest.configuration.ExportConfiguration;
 import com.test.bricktest.model.Product;
 import com.test.bricktest.util.CommonUtil;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -13,6 +14,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,9 +102,10 @@ public class BrickService {
 
     private void getProductOnClick(Product product, String href, String currentWindowHandle) {
         try {
+            var urlDestination = getUrl(decodeUrl(href));
             driver.switchTo().newWindow(WindowType.TAB);
-            driver.navigate().to(href);
-            log.info("Navigate to : {}", href);
+            driver.navigate().to(urlDestination);
+            log.info("Navigate to : {}", urlDestination);
 
             var rating = getElement("span[data-testid=lblPDPDetailProductRatingNumber]",
                     "span[data-testid=lblPDPDetailProductRatingNumber]")
@@ -106,7 +114,7 @@ public class BrickService {
             product.setRating(rating);
 
             var description = getElement("div[data-testid=lblPDPDescriptionProduk]",
-                    "span[data-testid=lblPDPDetailProductRatingNumber]")
+                    "span[data-testid=lblPDPDescriptionProduk]")
                     .map(e -> e.getAttribute(INNER_TEXT))
                     .orElse("-");
             product.setDescription(description);
@@ -114,7 +122,12 @@ public class BrickService {
             driver.close();
             driver.switchTo().window(currentWindowHandle);
         } catch (Exception e) {
-            driver.close();
+            String s = driver.getWindowHandle();
+            if (!s.equals(currentWindowHandle)) {
+                driver.close();
+                driver.switchTo().window(currentWindowHandle);
+                log.info("navigate to first window");
+            }
         }
     }
 
@@ -128,6 +141,23 @@ public class BrickService {
             log.error("error while get element: {}", e.getMessage());
         }
         return Optional.ofNullable(webElement);
+    }
+
+    private String getUrl(String decodedUrl) throws URISyntaxException {
+        return URLEncodedUtils.parse(new URI(decodedUrl), String.valueOf(Charset.forName("ASCII")))
+                .stream()
+                .filter(p -> "r".equals(p.getName()))
+                .findFirst()
+                .map(prm -> prm.getValue())
+                .orElseThrow(() -> new RuntimeException("error when get url"));
+    }
+
+    private static String decodeUrl(String href){
+        try {
+            return URLDecoder.decode(href, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex.getCause());
+        }
     }
 
 }
