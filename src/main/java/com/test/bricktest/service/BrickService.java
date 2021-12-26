@@ -114,7 +114,7 @@ public class BrickService {
             product.setRating(rating);
 
             var description = getElement("div[data-testid=lblPDPDescriptionProduk]",
-                    "span[data-testid=lblPDPDescriptionProduk]")
+                    "div[data-testid=lblPDPDescriptionProduk]")
                     .map(e -> e.getAttribute(INNER_TEXT))
                     .orElse("-");
             product.setDescription(description);
