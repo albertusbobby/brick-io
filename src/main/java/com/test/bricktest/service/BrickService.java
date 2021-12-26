@@ -21,8 +21,9 @@ import java.util.List;
 public class BrickService {
 
     private static final Logger log = LogManager.getLogger(BrickService.class);
-    private ExportConfiguration exportConfiguration;
+    private static final String INNER_TEXT = "innerText";
     private static WebDriver driver = null;
+    private ExportConfiguration exportConfiguration;
 
     BrickService(ExportConfiguration exportConfiguration) {
         this.exportConfiguration = exportConfiguration;
@@ -60,9 +61,9 @@ public class BrickService {
                 WebElement image = element.findElement(By.cssSelector("img[crossorigin=anonymous]"));
 
                 Product product = new Product();
-                product.setName(name.getAttribute("innerText"));
-                product.setPrice(price.getAttribute("innerText"));
-                product.setMerchantName(store.getAttribute("innerText"));
+                product.setName(name.getAttribute(INNER_TEXT));
+                product.setPrice(price.getAttribute(INNER_TEXT));
+                product.setMerchantName(store.getAttribute(INNER_TEXT));
                 product.setImageLink(image.getAttribute("src"));
 
                 // get detail when click product
@@ -96,10 +97,10 @@ public class BrickService {
             driver.switchTo().newWindow(WindowType.TAB);
             driver.navigate().to(href);
 
-//            WebElement rating = driver.findElement(By.cssSelector("a[data-testid=lblPDPDetailProductRatingNumber]"));
-
             product.setRating("4.34");
             product.setDescription("ini dummy description");
+
+            log.info("Product {}", product);
 
             driver.close();
             driver.switchTo().window(currentWindowHandle);
