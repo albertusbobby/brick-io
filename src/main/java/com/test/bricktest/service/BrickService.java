@@ -5,17 +5,18 @@ import com.test.bricktest.model.Product;
 import com.test.bricktest.util.CommonUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WindowType;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BrickService {
@@ -47,7 +48,7 @@ public class BrickService {
 
     private void getTopProduct() {
         List<Product> productList = new ArrayList<>();
-        String currentWindowHandle = driver.getWindowHandle();
+        var currentWindowHandle = driver.getWindowHandle();
         int page = 1;
         do {
             driver.get(getUrlPage(page));
@@ -96,30 +97,37 @@ public class BrickService {
         try {
             driver.switchTo().newWindow(WindowType.TAB);
             driver.navigate().to(href);
+            log.info("Navigate to : {}", href);
 
-            // get rating
-            try {
-                product.setDescription("4.32");
-            } catch (Exception e){
-                log.error("error while get rating: {}", e.getMessage());
-                product.setRating("-");
-            }
+            var rating = getElement("span[data-testid=lblPDPDetailProductRatingNumber]",
+                    "span[data-testid=lblPDPDetailProductRatingNumber]")
+                    .map(e -> e.getAttribute(INNER_TEXT))
+                    .orElse("-");
+            product.setRating(rating);
 
-            // get description
-            try {
-                product.setDescription("ini dummy description");
-            } catch (Exception e){
-                log.error("error while get description: {}", e.getMessage());
-                product.setDescription("-");
-            }
-
-            log.info("Product: {}", product);
+            var description = getElement("div[data-testid=lblPDPDescriptionProduk]",
+                    "span[data-testid=lblPDPDetailProductRatingNumber]")
+                    .map(e -> e.getAttribute(INNER_TEXT))
+                    .orElse("-");
+            product.setDescription(description);
 
             driver.close();
             driver.switchTo().window(currentWindowHandle);
         } catch (Exception e) {
             driver.close();
         }
+    }
+
+    private Optional<WebElement> getElement(String locator, String element) {
+        WebElement webElement = null;
+        try {
+            WebDriverWait driverWait = new WebDriverWait(driver, Duration.ofSeconds(exportConfiguration.getTimeoutOnClick()));
+            driverWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(locator)));
+            webElement = driver.findElement(By.cssSelector(element));
+        } catch (Exception e) {
+            log.error("error while get element: {}", e.getMessage());
+        }
+        return Optional.ofNullable(webElement);
     }
 
 }
