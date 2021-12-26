@@ -1,7 +1,6 @@
 package com.test.bricktest.util;
 
 import com.test.bricktest.model.Product;
-import com.test.bricktest.service.BrickService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
