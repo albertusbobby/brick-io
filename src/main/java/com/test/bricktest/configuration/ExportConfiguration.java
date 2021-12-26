@@ -10,6 +10,7 @@ public class ExportConfiguration {
     private String landingPageUrl;
     private int threshold;
     private String driverPath;
+    private String csvPath;
 
     public int getThreshold() {
         return threshold;
@@ -33,5 +34,13 @@ public class ExportConfiguration {
 
     public void setDriverPath(String driverPath) {
         this.driverPath = driverPath;
+    }
+
+    public String getCsvPath() {
+        return csvPath;
+    }
+
+    public void setCsvPath(String csvPath) {
+        this.csvPath = csvPath;
     }
 }
