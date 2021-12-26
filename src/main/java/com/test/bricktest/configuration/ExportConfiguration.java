@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "export")
 public class ExportConfiguration {
 
+    private int threshold = 10;
     private String landingPageUrl;
-    private int threshold;
     private String driverPath;
-    private String csvPath;
+    private int timeoutOnClick = 10;
 
     public int getThreshold() {
         return threshold;
@@ -36,11 +36,11 @@ public class ExportConfiguration {
         this.driverPath = driverPath;
     }
 
-    public String getCsvPath() {
-        return csvPath;
+    public int getTimeoutOnClick() {
+        return timeoutOnClick;
     }
 
-    public void setCsvPath(String csvPath) {
-        this.csvPath = csvPath;
+    public void setTimeoutOnClick(int timeoutOnClick) {
+        this.timeoutOnClick = timeoutOnClick;
     }
 }

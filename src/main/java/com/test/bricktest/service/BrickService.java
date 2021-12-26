@@ -97,10 +97,23 @@ public class BrickService {
             driver.switchTo().newWindow(WindowType.TAB);
             driver.navigate().to(href);
 
-            product.setRating("4.34");
-            product.setDescription("ini dummy description");
+            // get rating
+            try {
+                product.setDescription("4.32");
+            } catch (Exception e){
+                log.error("error while get rating: {}", e.getMessage());
+                product.setRating("-");
+            }
 
-            log.info("Product {}", product);
+            // get description
+            try {
+                product.setDescription("ini dummy description");
+            } catch (Exception e){
+                log.error("error while get description: {}", e.getMessage());
+                product.setDescription("-");
+            }
+
+            log.info("Product: {}", product);
 
             driver.close();
             driver.switchTo().window(currentWindowHandle);
